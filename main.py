@@ -22,42 +22,64 @@ def getClosing(ticker):
 
     return closingList
 
-# Create our charts folder
-try:
-    Path('charts').mkdir()
-except FileExistsError:
-    pass
+def printGraph(stocks):
+    # Create our charts folder
+    try:
+        Path('charts').mkdir()
+    except FileExistsError:
+        pass
 
-stocks = ['AMD', 'CSCO', 'MSFT', 'LOGI', 'JPM']
+    for stock in stocks:
+        stockClosing = np.array(getClosing(stock))
+        days = list(range(1, len(stockClosing)+1))
 
-for stock in stocks:
-    stockClosing = np.array(getClosing(stock))
-    days = list(range(1, len(stockClosing)+1))
+        # This plots the graph
+        plt.plot(days, stockClosing)
 
-    # This plots the graph
-    plt.plot(days, stockClosing)
+        # Get our min and max for Y
+        prices = getClosing(stock)
+        prices.sort()
+        low_price  = prices[0]
+        high_price = prices[-1]
 
-    # Get our min and max for Y
-    prices = getClosing(stock)
-    prices.sort()
-    low_price  = prices[0]
-    high_price = prices[-1]
+        # Set our X axis min and max
+        # form [xmin, xmax, ymin, ymax]
+        plt.axis([1, 10, low_price-2, high_price+2])
 
-    # Set our X axis min and max
-    # form [xmin, xmax, ymin, ymax]
-    plt.axis([1, 10, low_price-2, high_price+2])
+        # Set our labels for the graph
+        plt.xlabel("Days")
+        plt.ylabel('Closing Price')
+        plt.title(f'Closing Price for {stock}')
 
-    # Set our labels for the graph
-    plt.xlabel("Days")
-    plt.ylabel('Closing Price')
-    plt.title(f'Closing Price for {stock}')
+        #saves images
+        savefile = f'charts/{stock}.png'
+        plt.savefig(savefile)
 
-    #saves images
-    savefile = f'charts/{stock}.png'
-    plt.savefig(savefile)
+        #Finally show the graph
+        plt.show()
 
-    #Finally show the graph
-    plt.show()
+def getStocks():
+    stocks = []
 
+    print('Please give 5 stocks to graph:')
+    for i in range(1, 6):
 
-# %%
+        while True:
+            print(f'Enter stock ticker number {str(i)}')
+            ticker = input('> ')
+
+            try:
+                stock = yf.Ticker(ticker)
+                stock.info
+                stocks.append(ticker)
+                break
+            except:
+                print('That is not a valid stock. Please enter another')
+    return stocks
+
+#start of program
+for stock in getStocks():
+    getClosing(stock)
+    printGraph(stock)
+
+    # %%
