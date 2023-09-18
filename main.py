@@ -6,6 +6,7 @@
 import yfinance as yf
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 def getClosing(ticker):
     #get the closing price for the last 10 trading days
@@ -20,6 +21,12 @@ def getClosing(ticker):
         closingList.append(round(price, 2))
 
     return closingList
+
+# Create our charts folder
+try:
+    Path('charts').mkdir()
+except FileExistsError:
+    pass
 
 stocks = ['AMD', 'CSCO', 'MSFT', 'LOGI', 'JPM']
 
