@@ -23,12 +23,6 @@ def getClosing(ticker):
     return closingList
 
 def printGraph(stock):
-    # Create our charts folder
-    try:
-        Path('charts').mkdir()
-    except FileExistsError:
-        pass
-
     stockClosing = np.array(getClosing(stock))
     days = list(range(1, len(stockClosing)+1))
 
@@ -79,6 +73,12 @@ def getStocks():
     return stocks
 
 #start of program
+# Create our charts folder
+try:
+    Path('charts').mkdir()
+except FileExistsError:
+    pass
+
 for stock in getStocks():
     getClosing(stock)
     printGraph(stock)
